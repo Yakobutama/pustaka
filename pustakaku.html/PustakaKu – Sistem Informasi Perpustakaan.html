@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PustakaKu – Sistem Informasi Perpustakaan Komunitas</title>
+<style>
+:root{--bg:#f5f6fa;--cd:#fff;--tx:#1c2135;--mu:#5f677f;--ac:#2f5bd8;--ac2:#e8eeff;--bd:#dde1ee;--ok:#1a7f4b;--er:#c0392b;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1220;--cd:#1a1f35;--tx:#eef0fa;--mu:#a4abc7;--ac:#8ea6ff;--ac2:#242b4d;--bd:#2b3254;--ok:#4cd08a;--er:#ff7b6b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1220;--cd:#1a1f35;--tx:#eef0fa;--mu:#a4abc7;--ac:#8ea6ff;--ac2:#242b4d;--bd:#2b3254;--ok:#4cd08a;--er:#ff7b6b;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+.w{max-width:1000px;margin:0 auto;padding:16px 14px 60px}
+h1{margin:8px 0 2px;font-size:1.6rem}h1 span{color:var(--ac)}
+h2{font-size:1.1rem;margin:0 0 10px}
+.mu{color:var(--mu);font-size:.9rem;margin:0 0 12px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+button,input,select{font:inherit}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--cd);color:var(--tx);border-radius:10px;padding:8px 14px}
+button.on,button.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.on,:root:not([data-theme="light"]) button.pri{color:#0f1220}}
+input,select{padding:9px;border-radius:10px;border:1px solid var(--bd);background:var(--cd);color:var(--tx);width:100%}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+.g{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.st{background:var(--ac2);border-radius:12px;padding:12px}.st b{display:block;font-size:1.6rem}.st span{color:var(--mu);font-size:.85rem}
+.f{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end;margin-bottom:12px}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{padding:8px;text-align:left;border-bottom:1px solid var(--bd);font-size:.9rem}
+.tag{padding:2px 8px;border-radius:99px;font-size:.78rem;background:var(--ac2)}
+.ok{color:var(--ok)}.er{color:var(--er)}
+#msg{min-height:1.4em;margin:6px 0;font-weight:600}
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.flow div{flex:1;min-width:140px;background:var(--ac2);border-radius:12px;padding:12px}
+.flow b{display:block;color:var(--ac)}
+section{display:none}section.on{display:block}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Pustaka<span>Ku</span></h1>
+<p class="mu">Sistem informasi perpustakaan komunitas: kelola buku, anggota, peminjaman, denda, dan laporan.</p>
+<nav id="nv"></nav>
+
+<section id="dash">
+  <div class="g" id="stats"></div>
+  <div class="c" style="margin-top:14px"><h2>Buku terpopuler</h2><div id="pop"></div></div>
+</section>
+
+<section id="buku">
+  <div class="c"><h2>Tambah buku</h2>
+    <div class="f"><input id="bj" placeholder="Judul"><input id="bp" placeholder="Penulis"><input id="bs" type="number" min="1" value="1" placeholder="Stok"><button class="pri" id="ba">Simpan</button></div>
+    <input id="q" placeholder="Cari judul atau penulis...">
+  </div>
+  <div class="c sc"><table><thead><tr><th>Judul</th><th>Penulis</th><th>Stok</th><th>Dipinjam</th></tr></thead><tbody id="bt"></tbody></table></div>
+</section>
+
+<section id="agt">
+  <div class="c"><h2>Tambah anggota</h2>
+    <div class="f"><input id="an" placeholder="Nama anggota"><button class="pri" id="aa">Simpan</button></div></div>
+  <div class="c sc"><table><thead><tr><th>ID</th><th>Nama</th><th>Pinjaman aktif</th></tr></thead><tbody id="at"></tbody></table></div>
+</section>
+
+<section id="trx">
+  <div class="c"><h2>Peminjaman</h2>
+    <div class="f"><select id="pa"></select><select id="pb"></select><button class="pri" id="pk">Pinjam</button></div>
+    <p class="mu">Aturan: maksimal 3 pinjaman aktif per anggota, lama pinjam 7 hari, denda Rp1.000 per hari keterlambatan.</p>
+    <div id="msg"></div></div>
+  <div class="c"><h2>Pengembalian</h2>
+    <div class="f"><div><label class="mu" for="tk">Tanggal kembali (bisa diubah untuk simulasi denda)</label><input id="tk" type="date"></div></div>
+    <div class="sc"><table><thead><tr><th>Anggota</th><th>Buku</th><th>Tgl pinjam</th><th>Jatuh tempo</th><th></th></tr></thead><tbody id="tt"></tbody></table></div></div>
+  <div class="c"><h2>Riwayat &amp; denda</h2><div class="sc"><table><thead><tr><th>Anggota</th><th>Buku</th><th>Kembali</th><th>Terlambat</th><th>Denda</th></tr></thead><tbody id="rt"></tbody></table></div></div>
+</section>
+
+<section id="str">
+  <div class="c"><h2>Alur sistem: Input → Proses → Output</h2>
+    <div class="flow">
+      <div><b>Input</b>Data buku, data anggota, transaksi pinjam dan kembali</div>
+      <div><b>Proses</b>Validasi aturan, hitung denda, update stok, agregasi laporan</div>
+      <div><b>Penyimpanan</b>Basis data buku, anggota, transaksi (disimpan di browser)</div>
+      <div><b>Output</b>Dashboard, daftar pinjaman, riwayat dan denda</div>
+      <div><b>Kontrol</b>Validasi input, batas stok dan pinjaman</div>
+    </div></div>
+  <div class="c"><h2>Enam komponen pada PustakaKu</h2>
+    <div class="sc"><table><tr><th>Komponen</th><th>Wujud di PustakaKu</th></tr>
+    <tr><td>Perangkat keras</td><td>Ponsel atau komputer pustakawan</td></tr>
+    <tr><td>Perangkat lunak</td><td>Aplikasi web ini (HTML, CSS, JavaScript)</td></tr>
+    <tr><td>Data</td><td>Buku, anggota, transaksi</td></tr>
+    <tr><td>Prosedur</td><td>Aturan pinjam, batas 3 buku, denda</td></tr>
+    <tr><td>Manusia</td><td>Pustakawan, anggota, pengelola</td></tr>
+    <tr><td>Jaringan</td><td>Internet untuk mengakses web</td></tr></table></div></div>
+  <div class="c"><h2>Tingkatan sistem</h2>
+    <p><span class="tag">TPS</span> Pencatatan pinjam dan kembali. <span class="tag">MIS</span> Dashboard dan riwayat. <span class="tag">DSS</span> Daftar buku terpopuler untuk keputusan pembelian buku baru.</p></div>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const TODAY=new Date().toISOString().slice(0,10);
+const SEED={buku:[{id:1,j:"Laskar Pelangi",p:"Andrea Hirata",s:3},{id:2,j:"Bumi Manusia",p:"Pramoedya Ananta Toer",s:2},{id:3,j:"Filosofi Teras",p:"Henry Manampiring",s:2},{id:4,j:"Dasar Sistem Informasi",p:"Tim Penulis",s:4}],agt:[{id:1,n:"Andi"},{id:2,n:"Sari"},{id:3,n:"Budi"}],aktif:[],riwayat:[]};
+let D;
+try{D=JSON.parse(localStorage.getItem("pustakaku")||"null")}catch(e){D=null}
+D=D||JSON.parse(JSON.stringify(SEED));
+function save(){try{localStorage.setItem("pustakaku",JSON.stringify(D))}catch(e){}}
+const rp=n=>"Rp"+n.toLocaleString("id-ID");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bk=id=>D.buku.find(b=>b.id==id),ag=id=>D.agt.find(a=>a.id==id);
+const dipinjam=id=>D.aktif.filter(t=>t.b==id).length;
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const selisih=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+
+// Navigasi
+const TABS=[["dash","Dashboard"],["buku","Buku"],["agt","Anggota"],["trx","Transaksi"],["str","Struktur Sistem"]];
+TABS.forEach(([id,l])=>{const b=document.createElement("button");b.textContent=l;b.dataset.id=id;b.onclick=()=>show(id);$("#nv").appendChild(b)});
+function show(id){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.id===id));if(location.hash!=="#"+id){try{history.replaceState(null,"","#"+id)}catch(e){}}}
+
+// Algoritma: denda = max(0, hari terlambat) x tarif
+function hitungDenda(jatuhTempo,kembali){const t=Math.max(0,selisih(jatuhTempo,kembali));return{hari:t,denda:t*1000}}
+
+// Algoritma: validasi peminjaman
+function pinjam(a,b){
+  const buku=bk(b),n=D.aktif.filter(t=>t.a==a).length;
+  if(!a||!b)return"Pilih anggota dan buku.";
+  if(buku.s-dipinjam(b)<=0)return"Stok buku habis.";
+  if(n>=3)return"Anggota sudah meminjam 3 buku.";
+  if(D.aktif.some(t=>t.a==a&&t.b==b))return"Buku yang sama sudah dipinjam anggota ini.";
+  D.aktif.push({a:+a,b:+b,tgl:TODAY,tempo:addDays(TODAY,7)});save();render();return"";
+}
+function kembali(i){
+  const t=D.aktif[i],tgl=$("#tk").value||TODAY,d=hitungDenda(t.tempo,tgl);
+  D.riwayat.unshift({a:t.a,b:t.b,kembali:tgl,hari:d.hari,denda:d.denda});D.aktif.splice(i,1);save();render();
+}
+
+// Algoritma: pencarian (substring, tidak peka huruf besar)
+function cari(k){k=k.trim().toLowerCase();return D.buku.filter(b=>!k||b.j.toLowerCase().includes(k)||b.p.toLowerCase().includes(k))}
+
+function render(){
+  // Laporan (agregasi)
+  const tot=D.buku.reduce((s,b)=>s+b.s,0),pj=D.aktif.length,dn=D.riwayat.reduce((s,r)=>s+r.denda,0);
+  $("#stats").innerHTML=[["Judul buku",D.buku.length],["Total eksemplar",tot],["Sedang dipinjam",pj],["Anggota",D.agt.length],["Total denda",rp(dn)]].map(([l,v])=>`<div class="st"><b>${v}</b><span>${l}</span></div>`).join("");
+  const cnt={};D.aktif.forEach(t=>cnt[t.b]=(cnt[t.b]||0)+1);D.riwayat.forEach(t=>cnt[t.b]=(cnt[t.b]||0)+1);
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  $("#pop").innerHTML=top.length?top.map(([id,n],i)=>`<div>${i+1}. ${esc(bk(id).j)} <span class="mu">(${n}x dipinjam)</span></div>`).join(""):'<span class="mu">Belum ada data peminjaman.</span>';
+  $("#bt").innerHTML=cari($("#q").value).map(b=>`<tr><td>${esc(b.j)}</td><td>${esc(b.p)}</td><td>${b.s-dipinjam(b.id)} / ${b.s}</td><td>${dipinjam(b.id)}</td></tr>`).join("")||'<tr><td colspan="4" class="mu">Tidak ditemukan.</td></tr>';
+  $("#at").innerHTML=D.agt.map(a=>`<tr><td>A${String(a.id).padStart(3,"0")}</td><td>${esc(a.n)}</td><td>${D.aktif.filter(t=>t.a==a.id).length} / 3</td></tr>`).join("");
+  const sa=$("#pa").value,sb=$("#pb").value;
+  $("#pa").innerHTML='<option value="">Pilih anggota</option>'+D.agt.map(a=>`<option value="${a.id}">${esc(a.n)}</option>`).join("");
+  $("#pb").innerHTML='<option value="">Pilih buku</option>'+D.buku.map(b=>`<option value="${b.id}">${esc(b.j)} (sisa ${b.s-dipinjam(b.id)})</option>`).join("");
+  $("#pa").value=sa;$("#pb").value=sb;
+  $("#tt").innerHTML=D.aktif.map((t,i)=>`<tr><td>${esc(ag(t.a).n)}</td><td>${esc(bk(t.b).j)}</td><td>${t.tgl}</td><td>${t.tempo}</td><td><button onclick="kembali(${i})">Kembalikan</button></td></tr>`).join("")||'<tr><td colspan="5" class="mu">Tidak ada pinjaman aktif.</td></tr>';
+  $("#rt").innerHTML=D.riwayat.map(r=>`<tr><td>${esc(ag(r.a).n)}</td><td>${esc(bk(r.b).j)}</td><td>${r.kembali}</td><td>${r.hari} hari</td><td class="${r.denda?"er":"ok"}">${rp(r.denda)}</td></tr>`).join("")||'<tr><td colspan="5" class="mu">Belum ada riwayat.</td></tr>';
+}
+$("#tk").value=TODAY;
+$("#q").oninput=render;
+$("#ba").onclick=()=>{const j=$("#bj").value.trim(),p=$("#bp").value.trim(),s=+$("#bs").value;if(!j||!p||s<1)return alert("Isi judul, penulis, dan stok minimal 1.");D.buku.push({id:Math.max(0,...D.buku.map(b=>b.id))+1,j,p,s});$("#bj").value=$("#bp").value="";save();render()};
+$("#aa").onclick=()=>{const n=$("#an").value.trim();if(!n)return alert("Isi nama anggota.");D.agt.push({id:Math.max(0,...D.agt.map(a=>a.id))+1,n});$("#an").value="";save();render()};
+$("#pk").onclick=()=>{const m=pinjam($("#pa").value,$("#pb").value);const e=$("#msg");e.textContent=m||"Peminjaman berhasil dicatat.";e.className=m?"er":"ok"};
+render();
+const h=location.hash.slice(1);show(TABS.some(t=>t[0]===h)?h:"dash");
+</script>
+</body>
+</html>
