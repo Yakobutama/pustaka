@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PustakaKu – Sistem Informasi Perpustakaan Komunitas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f4;--card:#fff;--tx:#14213d;--mu:#55637a;--ac:#1f7a8c;--ac2:#dcebee;--bd:#d3dce2;--ok:#1d7a4d;--er:#b3362b;--wood:#9b7347;--s0:#1f7a8c;--s1:#e9b44c;--s2:#6d3b6e;--s3:#5b8c5a;--s4:#3d4f99;--on:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1722;--card:#162231;--tx:#e8eef5;--mu:#9fb0c3;--ac:#5cc2d6;--ac2:#1d3342;--bd:#26384a;--ok:#5fd69b;--er:#ff8a7a;--wood:#7a5a38;--on:#0e1722;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1722;--card:#162231;--tx:#e8eef5;--mu:#9fb0c3;--ac:#5cc2d6;--ac2:#1d3342;--bd:#26384a;--ok:#5fd69b;--er:#ff8a7a;--wood:#7a5a38;--on:#0e1722;color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 60px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 1rem/1.55 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:20}
+.w{max-width:1040px;margin:0 auto;padding:0 16px 64px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",system-ui,sans-serif;margin:0;letter-spacing:-.02em}
+h1{font-size:clamp(2.8rem,11vw,5.6rem);font-weight:800;line-height:.95;padding-top:36px}
+.lead{max-width:34rem;color:var(--mu);margin:12px 0 28px}
+h2{font-size:1.35rem;font-weight:800;margin:0 0 12px}
+.mu{color:var(--mu)}
+#shelf{display:flex;align-items:flex-end;gap:5px;overflow-x:auto;padding:24px 8px 0;border-bottom:14px solid var(--wood);border-radius:2px;min-height:210px}
+.sp{flex:none;width:38px;border:0;border-radius:3px 3px 0 0;background:var(--c);color:var(--on);cursor:pointer;padding:12px 0 8px;box-shadow:inset 0 10px 0 rgba(255,255,255,.22),inset -4px 0 0 rgba(0,0,0,.12);transition:transform .2s}
+.sp:nth-child(5n+2){color:#14213d}
+.sp span{writing-mode:vertical-rl;font:600 .8rem/1 "Bricolage Grotesque",sans-serif;display:block;max-height:100%;overflow:hidden;margin:0 auto}
+.sp.up{transform:translateY(-14px)}.sp.out{opacity:.3}
+.intro .sp{animation:drop .6s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i)*60ms)}
+@keyframes drop{from{transform:translateY(-120px);opacity:0}}
+#spi{min-height:1.6em;margin:12px 0 0}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:21;display:flex;gap:4px;overflow-x:auto;background:var(--bg);padding:12px 0;margin-top:16px;border-bottom:1px solid var(--bd)}
+nav button{flex:none;border:0;background:none;color:var(--mu);font:600 .95rem "Public Sans",sans-serif;padding:8px 14px;border-radius:99px;cursor:pointer}
+nav button.on{background:var(--tx);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+section{display:none;padding-top:24px}section.on{display:block}
+button.pri{background:var(--ac);color:var(--on);border:0;border-radius:10px;padding:10px 18px;font:600 1rem "Public Sans",sans-serif;cursor:pointer}
+input,select{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);width:100%}
+.f{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:end;margin-bottom:14px}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:18px}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border-top:2px solid var(--tx);border-bottom:1px solid var(--bd);margin-bottom:28px}
+.strip div{padding:16px 14px 14px 0}.strip div+div{border-left:1px solid var(--bd);padding-left:16px}
+.strip b{display:block;font:800 2.2rem/1 "Bricolage Grotesque",sans-serif}
+.strip span{color:var(--mu);font-size:.88rem}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:480px}
+th{text-align:left;font-size:.85rem;color:var(--mu);font-weight:600;padding:8px;border-bottom:2px solid var(--tx)}
+td{padding:10px 8px;border-bottom:1px solid var(--bd)}
+.dots{color:var(--ac);letter-spacing:2px}.dots i{font-style:normal;color:var(--bd)}
+.ok{color:var(--ok)}.er{color:var(--er)}
+#msg{min-height:1.5em;font-weight:600;margin-top:8px}
+.loans{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.loan{position:relative;background:var(--card);border:1px solid var(--bd);border-top:10px solid var(--sp);border-radius:4px 4px 8px 8px;padding:14px 16px 16px}
+.loan h3{font-size:1.1rem;margin-bottom:8px;padding-right:90px}
+.loan dl{margin:0 0 12px}.loan dt{font-size:.78rem;color:var(--mu);margin-top:8px}
+.loan dd{margin:0;padding-bottom:3px;border-bottom:1px dotted var(--mu)}
+.stamp{position:absolute;top:22px;right:12px;transform:rotate(7deg);border:2px solid;border-radius:6px;padding:3px 8px;font:800 .78rem/1.25 "Bricolage Grotesque",sans-serif;text-align:center}
+.stamp.ontime{color:var(--ok)}.stamp.late{color:var(--er)}
+.flow{display:grid;gap:0;border-left:3px solid var(--ac);margin:0 0 8px 6px}
+.flow div{padding:6px 0 14px 18px;position:relative}
+.flow div::before{content:"";position:absolute;left:-9px;top:10px;width:15px;height:15px;border-radius:50%;background:var(--ac);border:3px solid var(--bg)}
+.flow b{font-family:"Bricolage Grotesque",sans-serif}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;background:var(--ac2);font-weight:600;font-size:.85rem;margin-right:4px}
+@media (prefers-reduced-motion:reduce){.intro .sp{animation:none}.sp{transition:none}}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>PustakaKu</h1>
+<p class="lead">Sistem informasi perpustakaan komunitas. Catat buku dan anggota, atur pinjaman, dan biarkan denda terhitung sendiri.</p>
+<div id="shelf" role="group" aria-label="Rak buku"></div>
+<p id="spi" class="mu"></p>
+<nav id="nv" aria-label="Menu"></nav>
+
+<section id="dash">
+  <div class="strip" id="stats"></div>
+  <h2>Paling sering dipinjam</h2>
+  <div id="pop"></div>
+</section>
+
+<section id="buku">
+  <div class="box"><h2>Tambah buku</h2>
+    <div class="f"><input id="bj" placeholder="Judul" aria-label="Judul"><input id="bp" placeholder="Penulis" aria-label="Penulis"><input id="bs" type="number" min="1" value="1" aria-label="Stok"><button class="pri" id="ba">Simpan buku</button></div>
+    <input id="q" placeholder="Cari judul atau penulis" aria-label="Cari buku"></div>
+  <div class="sc"><table><thead><tr><th>Judul</th><th>Penulis</th><th>Ketersediaan</th></tr></thead><tbody id="bt"></tbody></table></div>
+</section>
+
+<section id="agt">
+  <div class="box"><h2>Tambah anggota</h2>
+    <div class="f"><input id="an" placeholder="Nama anggota" aria-label="Nama anggota"><button class="pri" id="aa">Simpan anggota</button></div></div>
+  <div class="sc"><table><thead><tr><th>ID</th><th>Nama</th><th>Pinjaman aktif</th></tr></thead><tbody id="at"></tbody></table></div>
+</section>
+
+<section id="trx">
+  <div class="box"><h2>Catat peminjaman</h2>
+    <div class="f"><select id="pa" aria-label="Anggota"></select><select id="pb" aria-label="Buku"></select><button class="pri" id="pk">Pinjamkan</button></div>
+    <p class="mu" style="margin:0">Maksimal 3 buku per anggota. Lama pinjam 7 hari. Denda Rp1.000 per hari keterlambatan.</p>
+    <div id="msg" role="status"></div></div>
+  <div class="box"><h2>Tanggal pengembalian</h2>
+    <label class="mu" for="tk" style="display:block;margin-bottom:6px">Ubah tanggal ini untuk mensimulasikan keterlambatan. Stempel di kartu ikut berubah.</label>
+    <input id="tk" type="date" style="max-width:220px"></div>
+  <h2>Pinjaman aktif</h2>
+  <div class="loans" id="tt" style="margin-bottom:28px"></div>
+  <h2>Riwayat dan denda</h2>
+  <div class="sc"><table><thead><tr><th>Anggota</th><th>Buku</th><th>Kembali</th><th>Terlambat</th><th>Denda</th></tr></thead><tbody id="rt"></tbody></table></div>
+</section>
+
+<section id="str">
+  <h2>Alur sistem</h2>
+  <div class="flow">
+    <div><b>Input</b><br>Data buku, data anggota, transaksi pinjam dan kembali</div>
+    <div><b>Proses</b><br>Validasi aturan, hitung denda, perbarui stok, rangkum laporan</div>
+    <div><b>Penyimpanan</b><br>Basis data buku, anggota, dan transaksi (di browser)</div>
+    <div><b>Output</b><br>Rak, kartu pinjaman, riwayat, dan denda</div>
+    <div><b>Kontrol</b><br>Validasi input, batas stok, batas 3 pinjaman</div>
+  </div>
+  <h2 style="margin-top:28px">Enam komponen</h2>
+  <div class="sc"><table><thead><tr><th>Komponen</th><th>Wujud di PustakaKu</th></tr></thead>
+  <tr><td><b>Perangkat keras</b></td><td>Ponsel atau komputer pustakawan</td></tr>
+  <tr><td><b>Perangkat lunak</b></td><td>Aplikasi web ini (HTML, CSS, JavaScript)</td></tr>
+  <tr><td><b>Data</b></td><td>Buku, anggota, transaksi</td></tr>
+  <tr><td><b>Prosedur</b></td><td>Aturan pinjam, batas 3 buku, denda</td></tr>
+  <tr><td><b>Manusia</b></td><td>Pustakawan, anggota, pengelola</td></tr>
+  <tr><td><b>Jaringan</b></td><td>Internet untuk mengakses web</td></tr></table></div>
+  <h2 style="margin-top:28px">Tingkatan sistem</h2>
+  <p><span class="tag">TPS</span>Mencatat pinjam dan kembali. <span class="tag">MIS</span>Rak, ringkasan, dan riwayat. <span class="tag">DSS</span>Buku terpopuler untuk keputusan membeli buku baru.</p>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const TODAY=new Date().toISOString().slice(0,10);
+const SEED={buku:[{id:1,j:"Laskar Pelangi",p:"Andrea Hirata",s:3},{id:2,j:"Bumi Manusia",p:"Pramoedya Ananta Toer",s:2},{id:3,j:"Filosofi Teras",p:"Henry Manampiring",s:2},{id:4,j:"Dasar Sistem Informasi",p:"Tim Penulis",s:4}],agt:[{id:1,n:"Andi"},{id:2,n:"Sari"},{id:3,n:"Budi"}],aktif:[],riwayat:[]};
+let D;
+try{D=JSON.parse(localStorage.getItem("pustakaku")||"null")}catch(e){D=null}
+D=D||JSON.parse(JSON.stringify(SEED));
+function save(){try{localStorage.setItem("pustakaku",JSON.stringify(D))}catch(e){}}
+const rp=n=>"Rp"+n.toLocaleString("id-ID");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bk=id=>D.buku.find(b=>b.id==id),ag=id=>D.agt.find(a=>a.id==id);
+const dipinjam=id=>D.aktif.filter(t=>t.b==id).length;
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+const selisih=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+
+// Navigasi
+const TABS=[["dash","Rak"],["buku","Buku"],["agt","Anggota"],["trx","Pinjam dan kembali"],["str","Struktur sistem"]];
+TABS.forEach(([id,l])=>{const b=document.createElement("button");b.textContent=l;b.dataset.id=id;b.onclick=()=>show(id);$("#nv").appendChild(b)});
+function show(id){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===id));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.id===id));if(location.hash!=="#"+id){try{history.replaceState(null,"","#"+id)}catch(e){}}}
+
+// Algoritma: denda = max(0, hari terlambat) x tarif
+function hitungDenda(jatuhTempo,kembali){const t=Math.max(0,selisih(jatuhTempo,kembali));return{hari:t,denda:t*1000}}
+
+// Algoritma: validasi peminjaman
+function pinjam(a,b){
+  const buku=bk(b),n=D.aktif.filter(t=>t.a==a).length;
+  if(!a||!b)return"Pilih anggota dan buku.";
+  if(buku.s-dipinjam(b)<=0)return"Stok buku habis.";
+  if(n>=3)return"Anggota sudah meminjam 3 buku.";
+  if(D.aktif.some(t=>t.a==a&&t.b==b))return"Buku yang sama sudah dipinjam anggota ini.";
+  D.aktif.push({a:+a,b:+b,tgl:TODAY,tempo:addDays(TODAY,7)});save();render();return"";
+}
+function kembali(i){
+  const t=D.aktif[i],tgl=$("#tk").value||TODAY,d=hitungDenda(t.tempo,tgl);
+  D.riwayat.unshift({a:t.a,b:t.b,kembali:tgl,hari:d.hari,denda:d.denda});D.aktif.splice(i,1);save();render();
+}
+
+// Algoritma: pencarian (substring, tidak peka huruf besar)
+function cari(k){k=k.trim().toLowerCase();return D.buku.filter(b=>!k||b.j.toLowerCase().includes(k)||b.p.toLowerCase().includes(k))}
+
+function render(){
+  // Laporan (agregasi)
+  const tot=D.buku.reduce((s,b)=>s+b.s,0),pj=D.aktif.length,dn=D.riwayat.reduce((s,r)=>s+r.denda,0);
+  $("#stats").innerHTML=[["Judul buku",D.buku.length],["Total eksemplar",tot],["Sedang dipinjam",pj],["Anggota",D.agt.length],["Total denda",rp(dn)]].map(([l,v])=>`<div><b>${v}</b><span>${l}</span></div>`).join("");
+  const cnt={};D.aktif.forEach(t=>cnt[t.b]=(cnt[t.b]||0)+1);D.riwayat.forEach(t=>cnt[t.b]=(cnt[t.b]||0)+1);
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  shelf();
+  $("#pop").innerHTML=top.length?top.map(([id,n],i)=>`<p style="margin:0 0 6px"><b>${esc(bk(id).j)}</b> <span class="mu">dipinjam ${n} kali</span></p>`).join(""):'<span class="mu">Belum ada peminjaman. Buku yang paling sering dipinjam akan tampil di sini.</span>';
+  $("#bt").innerHTML=cari($("#q").value).map(b=>`<tr><td><b>${esc(b.j)}</b></td><td>${esc(b.p)}</td><td>${dots(b)} <span class="mu">${b.s-dipinjam(b.id)} dari ${b.s}</span></td></tr>`).join("")||'<tr><td colspan="3" class="mu">Tidak ada buku yang cocok. Coba kata kunci lain.</td></tr>';
+  $("#at").innerHTML=D.agt.map(a=>`<tr><td>A${String(a.id).padStart(3,"0")}</td><td>${esc(a.n)}</td><td>${D.aktif.filter(t=>t.a==a.id).length} / 3</td></tr>`).join("");
+  const sa=$("#pa").value,sb=$("#pb").value;
+  $("#pa").innerHTML='<option value="">Pilih anggota</option>'+D.agt.map(a=>`<option value="${a.id}">${esc(a.n)}</option>`).join("");
+  $("#pb").innerHTML='<option value="">Pilih buku</option>'+D.buku.map(b=>`<option value="${b.id}">${esc(b.j)} (sisa ${b.s-dipinjam(b.id)})</option>`).join("");
+  $("#pa").value=sa;$("#pb").value=sb;
+  const tk=$("#tk").value||TODAY;
+  $("#tt").innerHTML=D.aktif.map((t,i)=>{const d=hitungDenda(t.tempo,tk);return `<article class="loan" style="--sp:var(--s${t.b%5})"><h3>${esc(bk(t.b).j)}</h3><dl><dt>Peminjam</dt><dd>${esc(ag(t.a).n)}</dd><dt>Tanggal pinjam</dt><dd>${t.tgl}</dd><dt>Jatuh tempo</dt><dd>${t.tempo}</dd></dl><div class="stamp ${d.hari?"late":"ontime"}">${d.hari?`Terlambat ${d.hari} hari<br>${rp(d.denda)}`:"Tepat waktu"}</div><button class="pri" onclick="kembali(${i})">Kembalikan</button></article>`}).join("")||'<p class="mu">Belum ada pinjaman aktif. Catat peminjaman di atas, kartunya akan muncul di sini.</p>';
+  $("#rt").innerHTML=D.riwayat.map(r=>`<tr><td>${esc(ag(r.a).n)}</td><td>${esc(bk(r.b).j)}</td><td>${r.kembali}</td><td>${r.hari} hari</td><td class="${r.denda?"er":"ok"}">${rp(r.denda)}</td></tr>`).join("")||'<tr><td colspan="5" class="mu">Riwayat muncul setelah ada buku yang dikembalikan.</td></tr>';
+}
+$("#tk").value=TODAY;$("#shelf").classList.add("intro");
+$("#q").oninput=render;$("#tk").onchange=render;
+const dots=b=>{const f=b.s-dipinjam(b.id);return '<span class="dots" aria-hidden="true">'+"●".repeat(f)+'<i>'+"●".repeat(b.s-f)+'</i></span>'};
+let sel=0;
+function shelf(){
+  const h=$("#shelf");h.innerHTML=D.buku.map(b=>{const f=b.s-dipinjam(b.id),ht=96+Math.min(b.s,8)*12+(b.j.length%4)*10;return `<button class="sp${f?"":" out"}${sel===b.id?" up":""}" style="--i:${b.id%12};--c:var(--s${b.id%5});height:${ht}px" data-id="${b.id}" title="${esc(b.j)}"><span>${esc(b.j)}</span></button>`}).join("");
+  h.querySelectorAll(".sp").forEach(x=>x.onclick=()=>{sel=+x.dataset.id;shelf()});
+  const b=bk(sel);$("#spi").innerHTML=b?`<b>${esc(b.j)}</b>, ${esc(b.p)}. Tersedia ${b.s-dipinjam(b.id)} dari ${b.s} eksemplar.`:'Ketuk satu buku di rak untuk melihat ketersediaannya.';
+}
+setTimeout(()=>$("#shelf").classList.remove("intro"),1800);
+$("#ba").onclick=()=>{const j=$("#bj").value.trim(),p=$("#bp").value.trim(),s=+$("#bs").value;if(!j||!p||s<1)return alert("Judul dan penulis wajib diisi, stok minimal 1.");D.buku.push({id:Math.max(0,...D.buku.map(b=>b.id))+1,j,p,s});$("#bj").value=$("#bp").value="";save();render()};
+$("#aa").onclick=()=>{const n=$("#an").value.trim();if(!n)return alert("Nama anggota wajib diisi.");D.agt.push({id:Math.max(0,...D.agt.map(a=>a.id))+1,n});$("#an").value="";save();render()};
+$("#pk").onclick=()=>{const m=pinjam($("#pa").value,$("#pb").value);const e=$("#msg");e.textContent=m||"Tercatat. Kartu pinjaman sudah dibuat di bawah.";e.className=m?"er":"ok"};
+render();
+const h=location.hash.slice(1);show(TABS.some(t=>t[0]===h)?h:"dash");
+</script>
+</body>
+</html>
